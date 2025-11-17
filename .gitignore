@@ -1,0 +1,17 @@
+# Docker/Build Artifacts (공통)
+.env
+__pycache__/
+*.pyc
+node_modules/
+/dist/
+
+# ComfyUI Source Files (필수 파일만 남기고 나머지는 무시)
+/ComfyUI/
+!/ComfyUI/.gitignore
+!/ComfyUI/models/
+!/ComfyUI/custom_nodes/
+!/ComfyUI/web/
+
+# ComfyUI Generated Data (절대 깃허브에 올리면 안 되는 파일들)
+comfyui_models/output/
+comfyui_models/input/

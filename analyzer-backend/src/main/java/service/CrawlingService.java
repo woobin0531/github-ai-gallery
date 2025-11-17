@@ -3,7 +3,6 @@ package com.myproject.analyzerbackend.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.myproject.analyzerbackend.domain.RepositoryProfile;
 import com.myproject.analyzerbackend.domain.RepositoryProfileRepository;
-// ⭐️ [삭제됨] 에러를 유발하던 import com.myproject...dto.GitHubSearchResult 줄을 완벽히 제거했습니다.
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;

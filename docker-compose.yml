@@ -1,0 +1,89 @@
+version: "3.8"
+
+services:
+  # 1. 백엔드 (Java) - DB/토큰 문제 해결됨
+  analyzer-backend:
+    build:
+      context: ./analyzer-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - ollama-server
+      - comfyui-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/project_analyzer_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD} # 100% 정답
+      - OLLAMA_BASE_URL=http://ollama-server:11434 
+      - COMFYUI_BASE_URL=http://comfyui-server:8188
+      - GITHUB_API_TOKEN=${GITHUB_API_TOKEN} # 100% 정답
+    networks:
+      - ai_gallery_net
+
+  # 2. 프론트엔드 (React)
+  analyzer-frontend:
+    build:
+      context: ./analyzer-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - analyzer-backend
+    networks:
+      - ai_gallery_net
+
+  # 3. PostgreSQL 데이터베이스 - DB 문제 해결됨
+  database:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=project_analyzer_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD} # 100% 정답
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ai_gallery_net
+
+  # 4. Ollama (LLM 서버)
+  ollama-server:
+    image: ollama/ollama
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollamadata:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    networks:
+      - ai_gallery_net
+
+  # 5. ComfyUI (이미지 생성 서버) - PULL 대신 BUILD (100% 정답)
+  comfyui-server:
+    image: sdhnshu/comfyui:0.3.4  
+    command: python main.py --listen 0.0.0.0 --port 8188
+    ports:
+      - "8189:8188"
+
+    volumes:
+      - ./comfyui_models/checkpoints:/ComfyUI/models/checkpoints
+      - ./comfyui_models/output:/ComfyUI/output
+    deploy: 
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    networks:
+      - ai_gallery_net
+
+volumes:
+  pgdata:
+  ollamadata:
+
+networks:
+  ai_gallery_net:
