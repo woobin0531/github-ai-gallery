@@ -1,0 +1,34 @@
+/* Root 기본 스타일 리셋 */
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+/* 메인 레이아웃 (사이드바 + 콘텐츠) */
+.App {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color: #202020; /* 전체 어두운 배경 */
+  color: #e9ecef;
+}
+
+/* 콘텐츠 영역 (우측) */
+.main-content {
+  flex-grow: 1; /* 남은 공간 모두 차지 */
+  padding: 20px 40px;
+  overflow-y: auto; /* 콘텐츠만 스크롤 */
+}
+
+/* 페이지 제목 스타일 */
+.main-content h1 {
+  font-size: 2.2em;
+  color: #fff;
+  border-bottom: 2px solid #61dafb; /* 리액트 블루 포인트 */
+  padding-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+}

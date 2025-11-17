@@ -1,0 +1,145 @@
+/* 애니메이션 정의 (나타나기) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 카드 기본 스타일 */
+.repo-profile-item { 
+  position: relative; /* 중요: 버튼 위치의 기준점 */
+  
+  border: 1px solid #495057; 
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background-color: #343a40; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+  color: #e9ecef; 
+  
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* 호버 효과 */
+.repo-profile-item:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
+}
+
+/* 이미지 영역 */
+.repo-image-link { display: block; }
+.repo-image-container {
+  width: 100%; 
+  aspect-ratio: 16 / 9; 
+  background-color: #495057; 
+}
+.repo-image { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  opacity: 0; 
+  animation: fadeIn 0.5s ease-out 0.2s forwards; 
+}
+
+/* 텍스트 컨텐츠 */
+.repo-content { padding: 15px; flex-grow: 1; } 
+.repo-profile-item h3 { 
+  margin-top: 0; margin-bottom: 12px; font-size: 1.1em; 
+}
+.repo-profile-item h3 a {
+  text-decoration: none; color: #61dafb; transition: color 0.2s;
+}
+.repo-profile-item h3 a:hover { color: #9cf; text-decoration: underline; }
+
+/* 기술 스택 요약 (말줄임표 적용) */
+.tech-summary {
+  font-size: 0.9em;
+  color: #adb5bd;
+  margin-top: 10px;
+  border-top: 1px solid #495057;
+  padding-top: 10px;
+  
+  display: -webkit-box;
+  -webkit-line-clamp: 4; /* 4줄 제한 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  min-height: 4.5em; 
+}
+.tech-summary strong {
+  color: #ced4da;
+}
+
+/* ⭐️ 버튼 공통 스타일 ⭐️ */
+.favorite-button, .refresh-button, .delete-button {
+  position: absolute; /* 절대 위치 */
+  top: 15px;          /* 상단 여백 동일 */
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  
+  background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  
+  opacity: 0; /* 평소엔 숨김 */
+  transition: all 0.2s ease;
+  z-index: 10;
+  
+  font-size: 1.2rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 카드 호버 시 버튼 보이기 */
+.repo-profile-item:hover .favorite-button,
+.repo-profile-item:hover .refresh-button,
+.repo-profile-item:hover .delete-button {
+  opacity: 1;
+}
+
+/* 1. 즐겨찾기 버튼 (왼쪽) */
+.favorite-button {
+  left: 15px;
+}
+.favorite-button.favorited {
+  color: #ffc107;
+  opacity: 1; /* 즐겨찾기 된 건 항상 보임 */
+  border-color: #ffc107;
+}
+.favorite-button:hover {
+  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+}
+
+/* 2. 새로고침 버튼 (오른쪽 1) */
+.refresh-button {
+  right: 60px; /* 삭제 버튼 왼쪽 옆 */
+  font-size: 1.4rem;
+}
+.refresh-button:hover {
+  transform: rotate(180deg) scale(1.1); /* 회전 효과 */
+  color: #61dafb;
+  border-color: #61dafb;
+}
+
+/* 3. 삭제 버튼 (오른쪽 2) */
+.delete-button {
+  right: 15px; /* 가장 오른쪽 */
+}
+.delete-button:hover {
+  transform: scale(1.1);
+  background: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
