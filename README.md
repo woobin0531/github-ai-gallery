@@ -6,9 +6,11 @@
 
 사용자는 텍스트 위주의 딱딱한 `README.md` 대신, **LLM(Llama 3)이 요약한 핵심 내용**과 **ComfyUI(SDXL)가 생성한 고품질 커버 이미지**를 통해 프로젝트의 성격을 한눈에 파악할 수 있습니다.
 
----
+<br>
 
-## ⚙️ 기술 적용 내역
+<details>
+<summary><b>⚙️ 기술 적용 내역 (Tech Stack)</b></summary>
+<br>
 
 본 프로젝트는 **Java 17 & Spring Boot 3.3.1**을 기반으로 개발되었으며, 생성형 AI 모델의 효율적인 동작을 위해 **Docker Container 환경**을 구축했습니다.
 
@@ -32,9 +34,13 @@
 - **PostgreSQL 16** — 프로젝트 메타데이터 및 분석 결과 영구 저장
 - **Docker Compose** — 다중 컨테이너(AI, DB, App) 오케스트레이션 및 GPU 리소스 할당(NVIDIA Container Toolkit)
 
----
+</details>
 
-## 🚀 주요 기능
+<br>
+
+<details>
+<summary><b>🚀 주요 기능 (Key Features)</b></summary>
+<br>
 
 ### 1. 자동 큐레이션 (Auto-Curation)
 
@@ -56,9 +62,13 @@
 - **즉시 분석 (On-Demand):** 사용자가 원하는 GitHub URL 입력 시, 우선순위 큐를 통해 즉시 분석 결과를 제공합니다.
 - **보관소 기능:** 관심 있는 프로젝트를 즐겨찾기하여 별도로 필터링하고 관리할 수 있습니다.
 
----
+</details>
 
-## 📊 시스템 아키텍처 및 흐름
+<br>
+
+<details>
+<summary><b>📊 시스템 아키텍처 및 흐름 (Architecture & Flow)</b></summary>
+<br>
 
 ### ▶️ Sequence Diagram: 자동 수집 및 분석
 
@@ -75,21 +85,27 @@
 React 클라이언트와 Spring Boot 서버 간의 데이터 조회 흐름입니다.
 ![Gallery View](./images/3.png)
 
----
+</details>
 
-## ⚠️ 트러블슈팅 및 성능 고려사항
+<br>
+
+<details>
+<summary><b>⚠️ 트러블슈팅 및 성능 고려사항 (Troubleshooting)</b></summary>
+<br>
 
 ### 1. 외부 API 지연 및 타임아웃 대응
 
 - **문제:** ComfyUI의 이미지 생성 시간이 5~10초 이상 소요되어, 일반적인 HTTP 요청 시 스레드 차단(Blocking) 발생 가능성.
-- **해결:** `Spring WebClient`를 도입하여 Non-blocking 방식으로 API를 호출하고, `@Async` 어노테이션을 적용하여 메인 스레드의 부하를 분산시켰습니다.
+- **해결:** **`Spring WebClient`**를 도입하여 **Non-blocking 방식**으로 API를 호출하고, **`@Async`** 어노테이션을 적용하여 메인 스레드의 부하를 분산시켰습니다.
 
 ### 2. 프롬프트 오염 방지 (Prompt Sanitization)
 
 - **문제:** README에서 추출한 텍스트에 특수문자나 이모지, 코드가 섞여 있어 ComfyUI 워크플로우가 깨지는 현상 발생.
-- **해결:** 정규표현식(Regex) 기반의 `sanitize` 로직을 구현하여 순수 텍스트 키워드만 추출하도록 전처리 과정을 강화했습니다.
+- **해결:** **정규표현식(Regex) 기반의 `sanitize` 로직**을 구현하여 순수 텍스트 키워드만 추출하도록 전처리 과정을 강화했습니다.
 
 ### 3. GitHub API Rate Limit 제한
 
 - **문제:** 잦은 수집 요청으로 인해 GitHub API의 시간당 요청 제한에 도달하는 문제.
 - **해결:** 익명 요청 대신 **Personal Access Token**을 헤더에 주입하여 요청 한도를 5,000회/시간으로 확장하고, 예외 발생 시 스케줄링을 일시 중단하는 로직을 추가했습니다.
+
+</details>
