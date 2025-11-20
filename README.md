@@ -63,17 +63,17 @@
 ### ▶️ Sequence Diagram: 자동 수집 및 분석
 
 스케줄러에 의해 백그라운드에서 주기적으로 실행되는 데이터 파이프라인입니다.
-![Scheduled Analysis](./1.png)
+![Scheduled Analysis](./images/1.png)
 
 ### ▶️ Sequence Diagram: 사용자 즉시 요청
 
 사용자가 URL을 입력했을 때 비동기 큐를 통해 처리되는 과정입니다.
-![On-Demand Analysis](./2.png)
+![On-Demand Analysis](./images/2.png)
 
 ### ▶️ Flow: 갤러리 뷰 데이터 흐름
 
 React 클라이언트와 Spring Boot 서버 간의 데이터 조회 흐름입니다.
-![Gallery View](./3.png)
+![Gallery View](./images/3.png)
 
 ---
 
