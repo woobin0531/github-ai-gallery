@@ -1,186 +1,95 @@
-<img width="715" alt="GitHub AI Gallery Banner" src="httpsimg.shields.io/badge/Tech-Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot" /> <img width="715" alt="GitHub AI Gallery Banner" src="httpsimg.shields.io/badge/Tech-React-61DAFB?style=for-the-badge&logo=react" /> <img width="715" alt="GitHub AI Gallery Banner" src="httpsimg.shields.io/badge/Tech-Docker-2496ED?style=for-the-badge&logo=docker" /> <img width="715" alt="GitHub AI Gallery Banner" src="httpsimg.shields.io/badge/AI-Ollama-lightgray?style=for-the-badge&logo=llama" /> <img width="715" alt="GitHub AI Gallery Banner" src="httpsimg.shields.io/badge/AI-Stable%20Diffusion-blueviolet?style=for-the-badge" />
+# 🎨 GitHub AI Gallery (GitHub AI 요약기)
 
-# 🎨 GitHub AI 갤러리
+## 📌 프로젝트 개요
 
-<details>
-<summary>프로젝트 개요 </summary> <br>
+**GitHub AI Gallery**는 매일 쏟아지는 방대한 오픈소스 프로젝트들을 사용자가 직관적으로 파악할 수 있도록 돕는 **AI 기반 큐레이션 플랫폼**입니다.
 
-개발자로서 매일 수많은 GitHub 저장소를 접하지만, **README만 읽고서는 프로젝트의 실제 가치나 핵심 기능을 파악하기 어렵습니다.** 특히 인기 있는 프로젝트들은 문서가 방대해 "이게 정확히 뭐하는 거지?"라는 의문이 들 때가 많았습니다. <br><br>
+사용자는 텍스트 위주의 딱딱한 `README.md` 대신, **LLM(Llama 3)이 요약한 핵심 내용**과 **ComfyUI(SDXL)가 생성한 고품질 커버 이미지**를 통해 프로젝트의 성격을 한눈에 파악할 수 있습니다.
 
-이 문제를 해결하기 위해, **GitHub 저장소를 AI로 분석하고 시각화하는 'AI 갤러리'**를 개발했습니다. <br><br>
+---
 
-백엔드 스케줄러가 1분마다 인기 GitHub 저장소를 수집하면, `Ollama(Llama 3)`가 README를 분석해 **핵심 요약**을 추출하고, `ComfyUI(SDXL)`가 프로젝트를 상징하는 **썸네일 이미지**를 생성합니다. 사용자는 React UI를 통해 AI가 정리해준 프로젝트 갤러리를 보며, 키워드 검색이나 주제별 필터링을 통해 새로운 영감을 얻을 수 있습니다.
+## ⚙️ 기술 적용 내역
 
-</details>
+본 프로젝트는 **Java 17 & Spring Boot 3.3.1**을 기반으로 개발되었으며, 생성형 AI 모델의 효율적인 동작을 위해 **Docker Container 환경**을 구축했습니다.
 
-<details>
-  <summary>주요 기능 </summary> <br>
+### 🖥️ 프론트엔드
 
-- **자동화된 분석 (스케줄링)**: 1분마다 GitHub API를 순환 호출하여 'AI Agent', 'RAG', 'Docker' 등 24개 핫 토픽의 인기 저장소를 수집합니다. <br><br>
-- **LLM 텍스트 요약**: `Ollama(Llama 3)`가 수집된 README 텍스트를 분석하여, 프로젝트의 제목, 핵심 기능 요약(한글), 이미지 생성용 컨셉(영어)을 추출합니다. <br><br>
-- **AI 이미지 생성**: `ComfyUI(SDXL)`가 LLM이 추출한 컨셉을 프롬프트로 받아, 프로젝트를 상징하는 고유한 썸네일 이미지를 생성합니다. <br><br>
-- **즉시 분석 요청**: 사용자가 UI에서 GitHub URL을 직접 입력하면, 해당 저장소를 즉시 분석 큐에 등록하여 갤러리에 추가합니다. <br><br>
-- **인터랙티브 갤러리 (React)**:
-  - **검색**: 제목과 요약 내용 기반의 키워드 검색
-  - **필터**: AI가 분류한 주제(Topic)별 필터링
-  - **즐겨찾기**: `localStorage`를 활용한 즐겨찾기(내 보관소) 기능
+- **React 18 + Vite** — 빠른 빌드 속도와 SPA(Single Page Application) 구성
+- **Custom Grid CSS** — 다양한 해상도에 대응하는 반응형 갤러리 레이아웃 구현
+- **Axios** — 백엔드 API와의 비동기 통신 및 인터셉터 처리
 
-</details>
+### 🛠️ 백엔드 (Server API)
 
-<br>
+- **Spring Boot 3.3** — 안정적인 엔터프라이즈급 애플리케이션 구축
+- **Spring WebClient** — GitHub/Ollama/ComfyUI API와의 **Non-blocking I/O** 통신 구현 (동기 방식 대비 리소스 효율 극대화)
+- **Spring Data JPA (Hibernate)** — PostgreSQL 객체 매핑 및 트랜잭션 관리
+- **Java Concurrency (@Async)** — 이미지 생성 등 긴 작업(Long-polling)의 비동기 백그라운드 처리
 
-# 📊 Sequence Diagram (Mermaid)
+### 🤖 AI & 데이터 (Model & Infra)
 
-<details>
-  <summary> 1. 자동 분석 스케줄링 (Backend → GitHub → Ollama → ComfyUI) </summary> <br>
+- **Ollama (Llama 3)** — 로컬 LLM 구동을 통한 비용 절감 및 README 텍스트 분석 (요약/컨셉 추출)
+- **ComfyUI (SDXL 1.0)** — 노드 기반의 워크플로우를 활용한 고품질 T2I(Text-to-Image) 생성
+- **PostgreSQL 16** — 프로젝트 메타데이터 및 분석 결과 영구 저장
+- **Docker Compose** — 다중 컨테이너(AI, DB, App) 오케스트레이션 및 GPU 리소스 할당(NVIDIA Container Toolkit)
 
-```mermaid
-sequenceDiagram
-    participant Scheduler (Backend)
-    participant GitHubService
-    participant OllamaService
-    participant ComfyUiService
-    participant DB (PostgreSQL)
+---
 
-    Scheduler->>GitHubService: 1. analyzeRepositories()
-    GitHubService->>GitHub API: 2. searchRepositories()
-    GitHub API-->>GitHubService: 3. 인기 저장소 5개
-    GitHubService->>GitHub API: 4. getReadmeContent()
-    GitHub API-->>GitHubService: 5. README (Base64)
-    GitHubService->>OllamaService: 6. analyzeReadme()
-    OllamaService->>Ollama (Docker): 7. LLM 프롬프트 (요약, 컨셉)
-    Ollama (Docker)-->>OllamaService: 8. 분석 텍스트
-    GitHubService->>ComfyUiService: 9. generateImage()
-    ComfyUiService->>ComfyUI (Docker): 10. POST /prompt (워크플로우 + 프롬프트)
-    ComfyUI (Docker)-->>ComfyUiService: 11. 이미지 URL
-    GitHubService->>DB: 12. repositoryProfileRepository.saveAll()
-</details>
+## 🚀 주요 기능
 
-<details>   <summary> 2. 사용자 요청 처리 (Frontend ↔ Backend) </summary>
+### 1. 자동 큐레이션 (Auto-Curation)
 
+- **동적 스케줄링:** 1분 주기로 실행되며 'AI Agent', 'RAG', 'Rust' 등 **24가지 최신 개발 트렌드**를 순환 수집합니다.
+- **스마트 페이지네이션:** `topicPageMap`을 활용하여 중복 수집을 방지하고 다양한 저장소를 탐색합니다.
 
-코드 스니펫
+### 2. AI 분석 파이프라인 (Analysis Pipeline)
 
-sequenceDiagram
-    participant User
-    participant Frontend (React)
-    participant Backend (Spring)
-    participant DB (PostgreSQL)
+- **핵심 요약:** 방대한 README 문서를 Llama 3 모델이 분석하여 **"이 프로젝트가 무엇인지"** 한국어 한 문장으로 정제합니다.
+- **시각적 컨셉 도출:** 프로젝트의 기술적 특성(Web, Library, CLI 등)을 분석하여 이미지 생성에 최적화된 **영어 프롬프트(Prompt)**를 추출합니다.
 
-    Note over User, Frontend: (A: 갤러리 조회)
-    User->>Frontend: 1. 페이지 접속 / 필터 클릭
-    Frontend->>Backend: 2. GET /api/projects (Pageable)
-    Backend->>DB: 3. findAll(pageable)
-    DB-->>Backend: 4. Page<RepositoryProfile>
-    Backend-->>Frontend: 5. 갤러리 목록 (JSON)
-    Frontend->>User: 6. 갤러리 렌더링
+### 3. 생성형 이미지 (Generative Art)
 
-    Note over User, Frontend: (B: 즉시 분석 요청)
-    User->>Frontend: 7. GitHub URL 입력 및 '분석' 클릭
-    Frontend->>Backend: 8. POST /api/projects/analyze (URL)
-    Backend-->>Frontend: 9. "분석 요청 접수됨" (202 Accepted)
-    Note over Backend: (CrawlingService.analyzeSingleUrl() @Async 실행)
-</details>
+- **ComfyUI 연동:** 추출된 프롬프트를 기반으로 SDXL 모델이 프로젝트의 분위기를 시각화한 썸네일을 생성합니다.
+- **프롬프트 엔지니어링:** 불필요한 텍스트 생성을 억제하고(Negative Prompt), 시각적 퀄리티를 높이는 키워드를 자동 주입합니다.
 
-🔗 기술 적용 내역
-<details>   <summary>기술 적용 내역 (Tech Stack)</summary>
+### 4. 사용자 경험 (UX)
 
-  본 프로젝트는 Spring Boot 백엔드와 React 프론트엔드로 구성되며, Docker Compose를 통해 모든 서비스를 한번에 관리하는 마이크로서비스 아키텍처(MSA)를 채택했습니다.
+- **즉시 분석 (On-Demand):** 사용자가 원하는 GitHub URL 입력 시, 우선순위 큐를 통해 즉시 분석 결과를 제공합니다.
+- **보관소 기능:** 관심 있는 프로젝트를 즐겨찾기하여 별도로 필터링하고 관리할 수 있습니다.
 
-  ### 🖥️ 프론트엔드 (analyzer-frontend)
+---
 
-React: 컴포넌트 기반 UI 구축
+## 📊 시스템 아키텍처 및 흐름
 
-Vite: 빠르고 모던한 프론트엔드 빌드 도구
+### ▶️ Sequence Diagram: 자동 수집 및 분석
 
-Axios: 백엔드 API 비동기 통신
+스케줄러에 의해 백그라운드에서 주기적으로 실행되는 데이터 파이프라인입니다.
+![Scheduled Analysis](./1.png)
 
-CSS Modules: 컴포넌트 스코프 스타일링 (Gird Layout, Flexbox)
+### ▶️ Sequence Diagram: 사용자 즉시 요청
 
-⚙️ 백엔드 (analyzer-backend)
-Spring Boot 3.3 / Java 17: API 서버
+사용자가 URL을 입력했을 때 비동기 큐를 통해 처리되는 과정입니다.
+![On-Demand Analysis](./2.png)
 
-Spring Data JPA / PostgreSQL: 데이터 저장 및 조회
+### ▶️ Flow: 갤러리 뷰 데이터 흐름
 
-Spring WebFlux (WebClient): Ollama, ComfyUI, GitHub API 비동기/논블로킹 호출
+React 클라이언트와 Spring Boot 서버 간의 데이터 조회 흐름입니다.
+![Gallery View](./3.png)
 
-Spring Scheduling (@Scheduled): 1분 주기 자동 분석 스케줄러
+---
 
-Spring Async (@Async): '즉시 분석' 기능의 비동기 처리
+## ⚠️ 트러블슈팅 및 성능 고려사항
 
-🤖 AI / DevOps (Docker)
-Docker / Docker Compose: 전체 서비스(Frontend, Backend, AI, DB) 실행 환경 통합
+### 1. 외부 API 지연 및 타임아웃 대응
 
-Ollama (ollama/ollama): llama3 모델을 서빙하여 텍스트 분석
+- **문제:** ComfyUI의 이미지 생성 시간이 5~10초 이상 소요되어, 일반적인 HTTP 요청 시 스레드 차단(Blocking) 발생 가능성.
+- **해결:** `Spring WebClient`를 도입하여 Non-blocking 방식으로 API를 호출하고, `@Async` 어노테이션을 적용하여 메인 스레드의 부하를 분산시켰습니다.
 
-ComfyUI (python:3.12-slim + Custom): sd_xl_base_1.0.safetensors 모델을 로드하여 이미지 생성
+### 2. 프롬프트 오염 방지 (Prompt Sanitization)
 
-</details>
+- **문제:** README에서 추출한 텍스트에 특수문자나 이모지, 코드가 섞여 있어 ComfyUI 워크플로우가 깨지는 현상 발생.
+- **해결:** 정규표현식(Regex) 기반의 `sanitize` 로직을 구현하여 순수 텍스트 키워드만 추출하도록 전처리 과정을 강화했습니다.
 
-🔧 문제 해결 사례
-<details>   <summary>문제 해결 사례</summary>
+### 3. GitHub API Rate Limit 제한
 
-
-AI 서비스 동기화 문제: 초기에는 AI 모델(Ollama, ComfyUI) 호출 시 응답이 올 때까지 메인 스레드가 대기(Blocking)하는 문제가 있었습니다.
-
-해결: RestTemplate 대신 **Spring WebFlux의 WebClient**를 도입하여, 모든 외부 API 호출을 비동기/논블로킹 방식으로 처리했습니다. 이로써 스케줄러가 대기 없이 더 많은 작업을 효율적으로 처리할 수 있게 되었습니다.
-
-
-
-'즉시 분석'의 UI 응답 지연: 사용자가 '즉시 분석'을 요청하면, AI 작업이 끝날 때까지 (최대 1~2분) UI가 응답을 받지 못하는 문제가 있었습니다.
-
-해결: CrawlingService의 analyzeSingleUrl 메서드에 @Async 어노테이션을 적용했습니다. 컨트롤러는 요청을 받자마자 "접수됨(202) (Accepted)" 응답을 즉시 반환하고, 실제 분석 작업은 백그라운드 스레드에서 처리하도록 분리하여 사용자 경험(UX)을 개선했습니다.
-
-
-
-복잡한 서비스 환경 관리: 개발 환경에서 Backend(Java), Frontend(Node), Ollama(Python), ComfyUI(Python) 등 4~5개의 다른 런타임과 터미널을 동시에 실행해야 했습니다.
-
-해결: **docker-compose.yml**을 작성하여 모든 서비스를 하나의 명령(docker compose up)으로 관리할 수 있도록 마이크로서비스 아키텍처를 완성했습니다. 이는 다른 개발자가 프로젝트를 실행하는 과정(Getting Started)을 극단적으로 단순화시켰습니다.
-
-</details>
-
-🏁 시작하기 (Getting Started)
-<details>   <summary>Getting Started (Docker Compose)</summary>
-
-
-이 프로젝트는 docker-compose를 사용하여 단 하나의 명령어로 모든 서비스를 실행할 수 있도록 패키징되어 있습니다.
-
-사전 요구 사항
-Docker Desktop이 설치되어 있어야 합니다.
-
-(권장) 최소 8GB 이상의 VRAM이 탑재된 NVIDIA GPU (ComfyUI의 AI 이미지 생성을 위해)
-
-설치 및 실행
-AI 모델 다운로드
-
-LLM (Llama 3): Ollama가 자동으로 다운로드합니다. (docker-compose.yml에 llama3 모델을 사용하도록 이미 설정되어 있을 수 있습니다.)
-
-Image (SDXL): sd_xl_base_1.0.safetensors 모델 파일을 다운로드하여 comfyui/models/checkpoints/ 디렉토리(또는 docker-compose.yml에 지정된 경로)에 배치해야 합니다.
-
-프로젝트 클론
-
-Bash
-
-git clone [https://github.com/woobin0531/github-ai-gallery.git](https://github.com/woobin0531/github-ai-gallery.git)
-cd github-ai-gallery
-Docker Compose 실행
-
-Bash
-
-# (선택) 백엔드, 프론트엔드 이미지 빌드
-docker compose build
-
-# 모든 서비스 시작 (백그라운드 실행)
-docker compose up -d
-접속 확인
-
-Frontend (갤러리): http://localhost:5173
-
-Backend (API): http://localhost:8080
-
-ComfyUI (워크플로우): http://localhost:8189
-
-Ollama (API): http://localhost:11435
-
-</details>
-```
+- **문제:** 잦은 수집 요청으로 인해 GitHub API의 시간당 요청 제한에 도달하는 문제.
+- **해결:** 익명 요청 대신 **Personal Access Token**을 헤더에 주입하여 요청 한도를 5,000회/시간으로 확장하고, 예외 발생 시 스케줄링을 일시 중단하는 로직을 추가했습니다.

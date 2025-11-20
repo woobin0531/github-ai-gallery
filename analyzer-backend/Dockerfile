@@ -11,7 +11,7 @@ COPY gradle ./gradle
 COPY build.gradle .
 COPY settings.gradle .
 
-# 의존성 먼저 다운로드 (RUN ... || true 는 오류가 나도 일단 넘어가게 해줌)
+# 의존성 먼저 다운로드
 RUN ./gradlew build || true 
 
 # 전체 소스 코드 복사
